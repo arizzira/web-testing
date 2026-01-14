@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeri Foto Rahasia</title>
+    <link rel="icon" href="data:,">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f2f5;
+            overflow: hidden; /* Biar gak bisa discroll */
+        }
+
+        /* SCREEN 1: Tampilan Awal */
+        #landing-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: #333;
+            text-align: center;
+            transition: opacity 0.5s;
+        }
+
+        h1 { font-size: 1.5rem; margin-bottom: 20px; }
+        
+        .btn-buka {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn-buka:active { transform: scale(0.95); }
+
+        /* SCREEN 2: Hacker Terminal */
+        #hacker-screen {
+            display: none;
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: black;
+            color: #00ff00;
+            padding: 20px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            z-index: 10;
+        }
+
+        /* SCREEN 3: Video Player (Rickroll) */
+        #prank-result {
+            display: none;
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100vh;
+            background: black;
+            z-index: 20;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* SOLUSI ERROR 2: Video tag lebih aman daripada Iframe Youtube */
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Biar videonya full layar rapi */
+        }
+    </style>
+</head>
+<body>
+
+    <div id="landing-page">
+        <h1>📁 File Ditemukan (3 Foto)</h1>
+        <p>Klik tombol di bawah untuk membuka galeri.</p>
+        <br>
+        <button class="btn-buka" onclick="mulaiHack()">Buka Foto</button>
+        <p style="font-size: 0.8rem; color: gray; margin-top: 50px;">Secure Viewer v2.0</p>
+    </div>
+
+    <div id="hacker-screen">
+        <div id="console-output"></div>
+    </div>
+
+    <div id="prank-result">
+        <video id="my-video" playsinline>
+            <source src="https://shattereddisk.github.io/rickroll/rickroll.mp4" type="video/mp4">
+            Browser kamu gak support video.
+        </video>
+    </div>
+
+    <script>
+        // Fungsi Suara Beep
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playBeep() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.frequency.value = 600;
+            gain.gain.value = 0.1;
+            osc.start();
+            setTimeout(() => osc.stop(), 50);
+        }
+
+        // Fungsi Ngetik
+        async function ketik(text, delay = 30) {
+            const output = document.getElementById('console-output');
+            const line = document.createElement('div');
+            output.appendChild(line);
+            
+            for (let i = 0; i < text.length; i++) {
+                line.textContent += text.charAt(i);
+                window.scrollTo(0, document.body.scrollHeight);
+                await new Promise(r => setTimeout(r, 5)); // Dipercepat biar gak bosen
+            }
+            playBeep();
+        }
+
+        async function mulaiHack() {
+            // 1. Fullscreen
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) elem.requestFullscreen().catch(() => {});
+            
+            // 2. Ganti Tampilan
+            document.getElementById('landing-page').style.display = 'none';
+            document.getElementById('hacker-screen').style.display = 'block';
+
+            // 3. Skenario Hacker (Dipercepat sedikit)
+            await ketik("Connecting to target...", 20);
+            await new Promise(r => setTimeout(r, 500));
+            await ketik("IP Address: 192.168.1.10 FOUND", 10);
+            await ketik("Bypassing firewall...", 10);
+            await ketik("ACCESS GRANTED.", 10);
+            
+            const output = document.getElementById('console-output');
+            const danger = document.createElement('div');
+            danger.style.color = "red"; 
+            danger.style.fontWeight = "bold"; 
+            danger.style.marginTop = "10px";
+            danger.textContent = "WARNING: SENDING DATA TO SERVER...";
+            output.appendChild(danger);
+            playBeep(); playBeep();
+
+            await new Promise(r => setTimeout(r, 1000));
+            await ketik("Uploading: gallery_photo_01.jpg [100%]", 5);
+            await ketik("Uploading: gallery_photo_02.jpg [100%]", 5);
+            await ketik("Uploading: chat_history.txt [100%]", 5);
+            await ketik("DELETING SYSTEM32...", 50);
+            
+            await new Promise(r => setTimeout(r, 1000));
+
+            // 4. MUNCULKAN VIDEO
+            document.getElementById('hacker-screen').style.display = 'none';
+            document.getElementById('prank-result').style.display = 'flex';
+            
+            // Play Video
+            const video = document.getElementById('my-video');
+            video.play().catch(e => {
+                console.log("Autoplay ditahan browser, user harus tap lagi (jarang terjadi setelah interaksi awal).");
+            });
+        }
+    </script>
+</body>
+</html>
